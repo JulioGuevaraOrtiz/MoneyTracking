@@ -1,0 +1,116 @@
+<center><h1>Lista de transacciones</h1></center>
+<div class="row">
+
+<nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="<?php echo APP_URL."transacciones/index"; ?>">Money Tracking</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <!-- left navigation links -->
+      <ul class="navbar-nav mr-auto">
+
+        <!-- active navigation link -->
+        <li class="nav-item active">
+          <a class="nav-link" href="<?php echo APP_URL."transacciones/index"; ?>">Transacciones
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+
+        <!-- regular navigation link -->
+        <li class="nav-item">
+          <a class="nav-link" href="<?php echo APP_URL."categorias/index"; ?>">Categorías</a>
+        </li>
+
+        <!-- more navigation links -->
+           <li class="nav-item">
+          <a class="nav-link" href="<?php echo APP_URL."cuentas/index"; ?>">Cuentas</a>
+        </li>
+
+
+      </ul>
+
+      <!-- right navigation link -->
+    </div>
+  </div>
+</nav>
+        <br><br>
+        <div class="col-md-12 text-left">
+            <a href="<?php echo APP_URL."transacciones/agregar"; ?>">
+                <button type="button" class="btn btn-primary"> 
+                    <i class="fa fa-plus"></i>
+                    Agregar nueva transacción
+                </button>
+            </a>
+        </div>
+
+        <div class="container">
+            <div class="col-md-12 mg-top-10">
+            <table class="table table-sm">
+                <tr>
+                    <th>ID</th>
+                    <th>Cuenta</th>
+                    <th>Categoria</th>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                    <th>Cantidad</th>
+                    <th>Acción</th>
+                </tr>
+                <?php $balance = 0;
+                $ingreso = 0;
+                $egreso = 0;
+                foreach ($this->transacciones as $transaccion): ?>
+                    <tr>
+                        <td><?php echo $transaccion["t"]["id"]; ?></td>
+                        <td><?php echo $transaccion["a"]["name"]; ?></td>
+                        <td><?php echo $transaccion["c"]["name"]; ?></td>
+                        <td><?php echo $transaccion["t"]["description"]; ?></td>
+                        <td><?php
+                            $date = new DateTime($transaccion["t"]["date"]);
+                            echo $date->format('d/m/Y'); ?></td>
+                        <td>$<?php
+                                if ($transaccion["t"]["amount"] > 0){
+                                    $balance = $balance + $transaccion["t"]["amount"];
+                                    echo "<label style='color: green'>".$transaccion["t"]["amount"]."</label>";
+                                }else{
+                                    $balance = $balance - $transaccion["t"]["amount"];
+                                    echo "<label style='color: red'>".$transaccion["t"]["amount"]."</label>"; }
+                            ?></td>
+                        <td>
+                            
+                <a href="<?php echo APP_URL."transacciones/editar/".$transaccion["t"]["id"]; ?>">
+                <button type="button" class="btn btn-success"> 
+                    <i class="fa fa-plus"></i>
+                editar
+                </button>
+            </a>
+            <a href="<?php echo APP_URL."transacciones/eliminar/".$transaccion["t"]["id"]; ?>">
+                <button type="button" class="btn btn-danger"> 
+                    <i class="fa fa-plus"></i>
+                eliminar
+                </button>
+            </a>
+                        </td>
+
+
+                    </tr>
+                    <?php if ($transaccion["t"]["amount"] > 0) {
+                        $ingreso = $transaccion["t"]["amount"] + $ingreso;
+                    }else{
+                        $egreso = -$transaccion["t"]["amount"] + $egreso;
+                    } ?>
+                <?php endforeach; ?>
+            </table>
+            <br>
+
+            <center>
+            <?php echo "<label class='right' style='color: blue'>".($ingreso-$egreso)."</label><label class='right'>Balance: $ </label><br>"; ?>
+            <?php echo "<label class='right' style='color: green'>".$ingreso."</label><label class='right'>Ingreso:  $</label><br>"; ?>
+            <?php echo "<label class='right' style='color: red'>".$egreso."</label><label class='right'>Egreso: $ </label>"; ?>
+            </center>
+        </div>
+    </div>
+</div>
+</div>
+
